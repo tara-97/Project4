@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.reminderslist
 import android.Manifest
 import android.annotation.TargetApi
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,9 +11,11 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
@@ -24,6 +27,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
+import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
@@ -32,7 +36,7 @@ import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private const val TAG = "ReminderListFragment"
+const val TAG = "ReminderListFragment"
 class ReminderListFragment : BaseFragment() {
     private val REQUEST_TURN_DEVICE_LOCATION_ON: Int = 3
 
@@ -55,7 +59,10 @@ class ReminderListFragment : BaseFragment() {
                 R.layout.fragment_reminders, container, false
             )
         binding.viewModel = _viewModel
-
+        val errorObserver = Observer<String> {text ->
+            Snackbar.make(binding.reminderssRecyclerView,text,Snackbar.LENGTH_SHORT).show()
+        }
+        _viewModel.showSnackBar.observe(viewLifecycleOwner,errorObserver)
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(false)
         setTitle(getString(R.string.app_name))
@@ -102,7 +109,9 @@ class ReminderListFragment : BaseFragment() {
             R.id.logout -> {
 //                TODO: add the logout implementation
                 AuthUI.getInstance().signOut(requireContext())
-                findNavController().navigate(R.id.to_authenticationActivity)
+                val intent = Intent(requireActivity(),AuthenticationActivity::class.java)
+                intent.flags = FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -208,5 +217,7 @@ class ReminderListFragment : BaseFragment() {
 
     }
 }
+
+
 
 

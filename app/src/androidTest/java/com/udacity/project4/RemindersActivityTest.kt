@@ -7,8 +7,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -41,6 +40,7 @@ class RemindersActivityTest :
 
     private lateinit var repository: ReminderDataSource
     private lateinit var appContext: Application
+    private lateinit var viewModel: SaveReminderViewModel
 
     /**
      * As we use Koin as a Service Locator Library to develop our code, we'll also use Koin to test our code.
@@ -75,6 +75,7 @@ class RemindersActivityTest :
         }
         //Get our real repository
         repository = get()
+        viewModel = get()
 
         //clear the data to start fresh
         runBlocking {
@@ -105,15 +106,10 @@ class RemindersActivityTest :
         onView(withId(R.id.addReminderFAB)).perform(click())
         onView(withId(R.id.reminderTitle)).perform(typeText("New Title"), closeSoftKeyboard())
         onView(withId(R.id.reminderDescription)).perform(typeText("New Description"), closeSoftKeyboard())
-        onView(withId(R.id.selectLocation)).perform(click())
+        onView(withId(R.id.saveReminder)).perform(click())
 
-        val uiDevice = Ui
-        onView(withId(""))
-
-//        onView(withId(R.id.saveReminder)).perform(click())
-//
-//        onView(withId(R.id.title)).check(matches(withText("New Title")))
-//        onView(withId(R.id.description)).check(matches(withText("New Description")))
+        onView(withText("New Title")).check(matches(isDisplayed()))
+        onView(withText("New Description")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

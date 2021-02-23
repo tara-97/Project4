@@ -33,6 +33,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 import org.robolectric.annotation.Config
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import org.junit.After
 import org.koin.test.get
@@ -96,6 +97,16 @@ class ReminderListFragmentTest : KoinTest {
         }
         onView(withId(R.id.addReminderFAB)).perform(click())
         verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
+    }
+
+    @Test
+    fun loadReminders_checkForError(){
+        dataSource.setErrorState(true)
+        launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+
+        onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
+        onView(withText("Test Exception"))
+                .check(matches(isDisplayed()));
     }
 
 }

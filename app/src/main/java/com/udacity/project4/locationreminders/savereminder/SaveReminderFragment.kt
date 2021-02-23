@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
@@ -45,10 +46,11 @@ class SaveReminderFragment : BaseFragment() {
 
         setDisplayHomeAsUpEnabled(true)
         geofencingClient = LocationServices.getGeofencingClient(this.requireActivity())
-
         binding.viewModel = _viewModel
 
+
         return binding.root
+
     }
 
     @SuppressLint("MissingPermission")
@@ -73,8 +75,8 @@ class SaveReminderFragment : BaseFragment() {
 //             1) add a geofencing request
             val geofence = Geofence.Builder()
                     .setRequestId(reminderItem.id)
-                    .setCircularRegion(latitude!!,
-                            longitude!!,
+                    .setCircularRegion(latitude?:0.000000,
+                            longitude?:0.000000,
                             GeofencingConstants.GEOFENCE_RADIUS_IN_METERS
                     )
                     .setExpirationDuration(GeofencingConstants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
@@ -95,9 +97,9 @@ class SaveReminderFragment : BaseFragment() {
                     }
                 }
             }
-
-//             2) save the reminder to the local db
             _viewModel.validateAndSaveReminder(reminderItem)
+//             2) save the reminder to the local db
+
         }
     }
 

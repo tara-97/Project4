@@ -43,15 +43,17 @@ class AuthenticationActivity : AppCompatActivity() {
 
 //          TODO: a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
-//        viewModel.authenticationState.observe(this, Observer<AuthenticationViewModel.AuthenticationState>{ authenticationState ->
-//            when(authenticationState) {
-//                AuthenticationViewModel.AuthenticationState.AUTHENTICATED -> startActivity(Intent(this, RemindersActivity::class.java))
-//                AuthenticationViewModel.AuthenticationState.UNAUTHENTICATED -> Log.e(TAG, "Not authenticated!")
-//                else -> Log.e(
-//                        TAG, "New $authenticationState state that doesn't require any UI change"
-//                )
-//            }
-//        })
+        viewModel.authenticationState.observe(this, Observer<AuthenticationViewModel.AuthenticationState>{ authenticationState ->
+            when(authenticationState) {
+                AuthenticationViewModel.AuthenticationState.AUTHENTICATED -> {
+                    startActivity(Intent(this, RemindersActivity::class.java))
+                }
+                AuthenticationViewModel.AuthenticationState.UNAUTHENTICATED -> Log.e(TAG, "Not authenticated!")
+                else -> Log.e(
+                        TAG, "New $authenticationState state that doesn't require any UI change"
+                )
+            }
+        })
 
     }
 
@@ -84,8 +86,7 @@ class AuthenticationActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 // User successfully signed in
                 Log.i(TAG, "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
-                val intent = Intent(this,RemindersActivity::class.java)
-                startActivity(intent)
+
 
 
 
