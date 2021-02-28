@@ -98,9 +98,12 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
 
         val homeLatLng = fusedLocationClient.lastLocation
                 .addOnSuccessListener { location : Location? ->
-                     val homeLatLng= LatLng(location!!.latitude,location.longitude)
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
-                    map.addMarker(MarkerOptions().position(homeLatLng))
+                    location?.let {
+                        val homeLatLng= LatLng(location.latitude,location.longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
+                        map.addMarker(MarkerOptions().position(homeLatLng))
+                    }
+
                 }
 
         setMapStyle(map)
